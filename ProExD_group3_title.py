@@ -6,6 +6,9 @@ import sys
 import time
 import pygame as pg
 
+import militaly_mode 
+import arrow_mode
+
 WIDTH = 1100
 HEIGHT = 650
 
@@ -32,9 +35,23 @@ def main():
     stage1_rect = pg.Rect(300, 300, 180, 100)
     stage2_rect = pg.Rect(600, 300, 180, 100)
 
+    # 背景として使う
+    military_bg_img = pg.image.load("fig/militaly.png").convert() 
+    arrow_bg_img = pg.image.load("fig/arrow.png").convert()
+
+    HALF_WIDTH = WIDTH // 2
+    # 画面の左半分にフィットするようにリサイズ (1100 / 2 = 550)
+    military_bg_img = pg.transform.scale(military_bg_img, (HALF_WIDTH, HEIGHT))
+    # 画面の右半分にフィットするようにリサイズ
+    arrow_bg_img = pg.transform.scale(arrow_bg_img, (HALF_WIDTH, HEIGHT))
+    
+    #（配置座標）
+    military_bg_rect = military_bg_img.get_rect(topleft=(0, 0))              # 左上の (0, 0) から開始
+    arrow_bg_rect = arrow_bg_img.get_rect(topleft=(HALF_WIDTH, 0))
+    
     # ステージ文字
-    stage1_text = stage_font.render("ラストコカー", True, WHITE)
-    stage2_text = stage_font.render("コカー・コカー", True, WHITE)
+    stage1_text = stage_font.render("ミリタリーモード", True, WHITE)
+    stage2_text = stage_font.render("アローモード", True, WHITE)
     stage1_text_rect = stage1_text.get_rect(center=stage1_rect.center)
     stage2_text_rect = stage2_text.get_rect(center=stage2_rect.center)
 
@@ -50,11 +67,13 @@ def main():
                     pg.quit()
                     subprocess.run([sys.executable, "shine.py"])
                     sys.exit()
+                    militaly_mode.run_military_mode(screen)  # STAGE 1 をクリックした時の処理を書く
                 if stage2_rect.collidepoint(event.pos):
-                    return 0  # STAGE 2 をクリックした時の処理を書く
+                    arrow_mode.run_arrow_mode(screen)  # STAGE 2 をクリックした時の処理を書く
 
         # 描画
-        screen.fill(BLACK)
+        screen.blit(military_bg_img, military_bg_rect)
+        screen.blit(arrow_bg_img, arrow_bg_rect)
         screen.blit(title_text, title_rect)
 
         pg.draw.rect(screen, WHITE, stage1_rect, 2)
@@ -64,7 +83,6 @@ def main():
         screen.blit(stage2_text, stage2_text_rect)
 
         pg.display.update()
-
 
 if __name__ == "__main__":
     pg.init()
