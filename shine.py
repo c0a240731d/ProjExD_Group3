@@ -119,18 +119,19 @@ class Gate(pg.sprite.Sprite):
 
         
         # ランダムな演算と値を生成
-        self.operator = random.choice(["+", "x", "-", "+", "x"]) # +とxが出やすいように調整
+        self.operator = random.choice(["+","+", "+", "-", "-", "x","/"]) # 出てくるもの調整可能
+        
         
         if self.operator in ["+", "-"]:
             self.value = random.randint(5, 50)
-        else: # x (掛け算)
+        else: # x (掛け算) /(割り算)
             self.value = random.randint(2, 5)
 
         # 良い効果（青）か悪い効果（赤）か判定
         is_good = False
         if self.operator == "+" or self.operator == "x":
             is_good = True
-        elif self.operator == "-":
+        elif self.operator == "-" or self.operator == "/":
             is_good = False
         
         self.color = BLUE if is_good else RED
